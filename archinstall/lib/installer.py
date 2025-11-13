@@ -870,10 +870,12 @@ class Installer:
 		# https://wiki.archlinux.org/title/Linux_console/Keyboard_configuration#Persistent_configuration
 		# https://gitlab.archlinux.org/archlinux/mkinitcpio/mkinitcpio/-/releases/v40
 		# https://www.gnu.org/software/grub/manual/grub/grub.html#Input-terminal
-		# Also fixes https://github.com/archlinux/archinstall/issues/3160
-
 		locale_cfg = locale_config or LocaleConfiguration.default()
 		self.set_vconsole(locale_cfg)
+		# Also fixes https://github.com/archlinux/archinstall/issues/3160
+		# Since we already validate ASCII only this should not cause any issue or need more changes
+		# https://github.com/archlinux/archinstall/issues/3155
+		# https://github.com/archlinux/archinstall/pull/3244
 
 		# This action takes place on the host system as pacstrap copies over package repository lists.
 		pacman_conf = PacmanConfig(self.target)
@@ -1293,7 +1295,7 @@ class Installer:
 
 		grub_default.write_text(config)
 
-		# could potentially set at_keyboard here
+		# could potentially set at_keyboard here and support non-ASCII for encryption passwords
 
 		info(f'GRUB boot partition: {boot_partition.dev_path}')
 
