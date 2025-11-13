@@ -777,9 +777,8 @@ class Installer:
 				# way of setting up encryption hooks for mkinitcpio.
 				# This is purely for stability reasons, we're going away from this.
 				# * systemd -> udev
-				# * sd-vconsole -> holds KEYMAP=
-				# This will require change too
-				self._hooks = [hook.replace('systemd', 'udev').replace('sd-vconsole', 'consolefont') for hook in self._hooks]
+				# * sd-vconsole -> keymap
+				self._hooks = [hook.replace('systemd', 'udev').replace('sd-vconsole', 'keymap consolefont') for hook in self._hooks]
 
 			content = re.sub('\nHOOKS=(.*)', f'\nHOOKS=({" ".join(self._hooks)})', content)
 			mkinit.seek(0)
