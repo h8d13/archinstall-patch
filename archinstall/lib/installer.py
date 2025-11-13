@@ -1794,7 +1794,7 @@ class Installer:
 		# Write the KEYMAP to vconsole.conf
 		vconsole_path.write_text(f'KEYMAP={kb_vconsole}\n')
 
-		debug(f'Wrote to {vconsole_path} using {kb_vconsole}')
+		info(f'Wrote to {vconsole_path} using {kb_vconsole}')
 
 	def set_keyboard_language(self, language: str) -> bool:
 		info(f'Setting keyboard language to {language}')
