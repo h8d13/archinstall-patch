@@ -1787,6 +1787,11 @@ class Installer:
 
 	def set_vconsole(self, locale_cfg: 'LocaleConfiguration') -> None:
 		kb_vconsole: str = locale_cfg.kb_layout
+		# this is the default used in ISO
+		font_vconsole = 'default8x16'
+		# ter-v16n
+		# ter-v32n
+
 		# Ensure /etc exists
 		vconsole_dir: Path = Path(self.target) / 'etc'
 		vconsole_dir.mkdir(parents=True, exist_ok=True)
@@ -1795,10 +1800,10 @@ class Installer:
 		# Write both KEYMAP and FONT to vconsole.conf
 		vconsole_content = f'KEYMAP={kb_vconsole}\n'
 		# Corrects another warning
-		vconsole_content += 'FONT=default8x16\n'
+		vconsole_content += f'FONT={font_vconsole}\n'
 
 		vconsole_path.write_text(vconsole_content)
-		info(f'Wrote to {vconsole_path} using {kb_vconsole} and default8x16 font')
+		info(f'Wrote to {vconsole_path} using {kb_vconsole} and {font_vconsole}')
 
 	def set_keyboard_language(self, language: str) -> bool:
 		info(f'Setting keyboard language to {language}')
