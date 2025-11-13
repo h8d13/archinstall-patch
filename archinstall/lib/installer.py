@@ -870,21 +870,11 @@ class Installer:
 		# We need to set vconsole before the first hook in accordance to
 		# https://wiki.archlinux.org/title/Linux_console/Keyboard_configuration#Persistent_configuration
 		# https://gitlab.archlinux.org/archlinux/mkinitcpio/mkinitcpio/-/releases/v40
+		# https://www.gnu.org/software/grub/manual/grub/grub.html#Input-terminal
+		# Will require disclaimer or checking passwords will work with layout
+
 		locale_cfg = locale_config or LocaleConfiguration.default()
-
-		# Get keyboard layout
-		kb_vconsole = locale_cfg.kb_layout
-
-		# Ensure /etc exists
-		vconsole_dir = Path(self.target) / 'etc'
-		vconsole_dir.mkdir(parents=True, exist_ok=True)
-
-		vconsole_path = vconsole_dir / 'vconsole.conf'
-
-		# Write the KEYMAP to vconsole.conf
-		vconsole_path.write_text(f'KEYMAP={kb_vconsole}\n')
-
-		debug(f'Wrote to {vconsole_path} using {kb_vconsole}')
+		self.set_vconsole(locale_cfg)
 
 		# This action takes place on the host system as pacstrap copies over package repository lists.
 		pacman_conf = PacmanConfig(self.target)
@@ -1791,6 +1781,20 @@ class Installer:
 			return True
 		except SysCallError:
 			return False
+
+	def set_vconsole(self, locale_cfg: 'LocaleConfiguration') -> None:
+		kb_vconsole: str = locale_cfg.kb_layout
+
+		# Ensure /etc exists
+		vconsole_dir: Path = Path(self.target) / 'etc'
+		vconsole_dir.mkdir(parents=True, exist_ok=True)
+
+		vconsole_path: Path = vconsole_dir / 'vconsole.conf'
+
+		# Write the KEYMAP to vconsole.conf
+		vconsole_path.write_text(f'KEYMAP={kb_vconsole}\n')
+
+		debug(f'Wrote to {vconsole_path} using {kb_vconsole}')
 
 	def set_keyboard_language(self, language: str) -> bool:
 		info(f'Setting keyboard language to {language}')
