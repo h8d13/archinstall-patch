@@ -1802,7 +1802,6 @@ class Installer:
 		vconsole_path.write_text(vconsole_content)
 		info(f'Wrote to {vconsole_path} using {kb_vconsole} and {font_vconsole}')
 
-
 	def set_keyboard_language(self, language: str) -> bool:
 		info(f'Setting keyboard language to {language}')
 
