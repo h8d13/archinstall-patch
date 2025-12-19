@@ -54,14 +54,33 @@ class PacmanConfig:
 		if self._config_remote_path:
 			copy2(self._config_path, self._config_remote_path)
 
-			# Also copy mirrorlist files from pacman.d (skip gnupg)
+			# Also copy pacman.d directory (mirrorlist files and gnupg keyring)
+			from shutil import copytree, ignore_patterns
+
 			pacman_d_path = Path('/etc/pacman.d')
 			target_pacman_d = self._config_remote_path.parent / 'pacman.d'
 
 			if pacman_d_path.exists():
 				target_pacman_d.mkdir(parents=True, exist_ok=True)
 
-				# Copy all mirrorlist files (*mirrorlist*)
+				# Copy all mirrorlist files
 				for mirrorlist_file in pacman_d_path.glob('*mirrorlist*'):
 					if mirrorlist_file.is_file():
 						copy2(mirrorlist_file, target_pacman_d / mirrorlist_file.name)
+
+				# Copy gnupg directory for package verification keys
+				# Skip socket files (S.*) and lock files which are runtime only
+				gnupg_source = pacman_d_path / 'gnupg'
+				gnupg_target = target_pacman_d / 'gnupg'
+
+				if gnupg_source.exists():
+					try:
+						copytree(
+							gnupg_source,
+							gnupg_target,
+							dirs_exist_ok=True,
+							ignore=ignore_patterns('S.*', '*.lock'),
+						)
+					except Exception:
+						# If copy fails, continue - pacman will regenerate keys
+						pass
