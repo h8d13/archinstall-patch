@@ -1282,7 +1282,7 @@ class Installer:
 		boot_partition: PartitionModification,
 		root: PartitionModification | LvmVolume,
 		efi_partition: PartitionModification | None,
-		bootloader_removable: bool = False,
+		bootloader_removable: bool = True,
 	) -> None:
 		debug('Installing grub bootloader')
 
@@ -1368,7 +1368,7 @@ class Installer:
 		efi_partition: PartitionModification | None,
 		root: PartitionModification | LvmVolume,
 		uki_enabled: bool = False,
-		bootloader_removable: bool = False,
+		bootloader_removable: bool = True,
 	) -> None:
 		debug('Installing Limine bootloader')
 
@@ -1625,7 +1625,7 @@ class Installer:
 		if not self.mkinitcpio(['-P']):
 			error('Error generating initramfs (continuing anyway)')
 
-	def add_bootloader(self, bootloader: Bootloader, uki_enabled: bool = False, bootloader_removable: bool = False) -> None:
+	def add_bootloader(self, bootloader: Bootloader, uki_enabled: bool = False, bootloader_removable: bool = True) -> None:
 		"""
 		Adds a bootloader to the installation instance.
 		Archinstall supports one of three types:
