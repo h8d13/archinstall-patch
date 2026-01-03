@@ -1733,6 +1733,20 @@ class Installer:
 
 		config_path.write_text('\n'.join(config_contents) + '\n')
 
+		# When UKI is enabled, configure rEFInd to not auto-detect traditional kernels
+		if uki_enabled:
+			refind_conf = self.target / efi_partition.relative_mountpoint / 'EFI/refind/refind.conf'
+			if refind_conf.exists():
+				conf_content = refind_conf.read_text()
+
+				# Disable scanning for traditional kernels in /boot
+				if 'dont_scan_dirs' not in conf_content:
+					# Add dont_scan_dirs to exclude /boot from auto-detection
+					conf_content += '\n# Disable kernel auto-detection in /boot when using UKI\n'
+					conf_content += 'dont_scan_dirs /boot,boot\n'
+
+				refind_conf.write_text(conf_content)
+
 		hook_contents = textwrap.dedent(
 			"""\
 			[Trigger]
