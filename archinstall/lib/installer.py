@@ -1412,7 +1412,7 @@ class Installer:
 						menuentry "Arch Linux ({kernel}{variant}) UKI" {{
 							insmod fat
 							insmod chain
-							search --no-floppy --set=root --fs-uuid {efi_partition.fs_uuid}
+							search --no-floppy --set=root --fs-uuid {efi_partition.uuid}
 							chainloader {uki_file}
 						}}
 						"""
