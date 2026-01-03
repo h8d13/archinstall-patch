@@ -1739,11 +1739,10 @@ class Installer:
 			if refind_conf.exists():
 				conf_content = refind_conf.read_text()
 
-				# Disable scanning for traditional kernels in /boot
-				if 'dont_scan_dirs' not in conf_content:
-					# Add dont_scan_dirs to exclude /boot from auto-detection
-					conf_content += '\n# Disable kernel auto-detection in /boot when using UKI\n'
-					conf_content += 'dont_scan_dirs /boot,boot\n'
+				# Disable scanning for vmlinuz/bzImage files without .efi extension
+				if 'scan_all_linux_kernels' not in conf_content:
+					conf_content += '\n# Disable vmlinuz auto-detection when using UKI\n'
+					conf_content += 'scan_all_linux_kernels false\n'
 
 				refind_conf.write_text(conf_content)
 
